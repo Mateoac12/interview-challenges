@@ -39,7 +39,9 @@ const api = {
 
     if (query) {
       results = results.filter((product) => {
-        return product.title.includes(query);
+        const regExp = new RegExp(query, "gi");
+
+        return regExp.test(product.title);
       });
     }
 
