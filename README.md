@@ -2,7 +2,7 @@
 En este repositorio se iran subiendo algunos de los challenges que resolvemos en [el stream](https://twitch.tv/goncypozzo).
 
 ## Entrevistas falsas
-* [Lista de supermercado](./supermarket-list) - [STREAM](https://www.youtube.com/watch?v=ocwsPB1ysOQ)
+- [x] [Lista de supermercado](./supermarket-list) - [STREAM](https://www.youtube.com/watch?v=ocwsPB1ysOQ)
 - [x] [Búsqueda de productos](./list-search) - [STREAM](https://www.youtube.com/watch?v=SG5FFwLDuSQ)
 * [Lista de archivos + algoritmos (Dan Abramov)](./dan-abramov) - [STREAM](https://www.youtube.com/watch?v=-w-P4u0x8ig)
 
