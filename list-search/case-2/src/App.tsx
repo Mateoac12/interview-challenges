@@ -1,10 +1,14 @@
 import type {Product} from "./types";
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import api from "./api";
+import {useDebounce} from "./hooks/useDebounce";
 
-function Recommended() {
+/* ## Nivel 3
+- [ ] Debemos poder agregar y quitar productos a favoritos clickeandolos, los productos en favoritos deben tener la clase "fav". */
+
+const Recommended = React.memo(() => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -28,15 +32,40 @@ function Recommended() {
       </ul>
     </main>
   );
-}
+});
+
+const initialProducts = () => JSON.parse(localStorage.getItem("products") as string) || [];
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [query, setQuery] = useState<string>("");
+  const debounceQuery = useDebounce(query);
 
   useEffect(() => {
-    api.search(query).then(setProducts);
-  }, [query]);
+    api.search(debounceQuery).then((products) => {
+      if (!localStorage.getItem("products")) {
+        const productsWithFavs = products.map((prod) => ({
+          ...prod,
+          fav: false,
+        }));
+
+        return setProducts(productsWithFavs);
+      }
+    });
+  }, [debounceQuery]);
+
+  useEffect(() => {
+    window.localStorage.setItem("products", JSON.stringify(products));
+  }, [products]);
+
+  const handleChangeFav = (id: number) => {
+    const productsWithFav = products.map((prod) => ({
+      ...prod,
+      fav: prod.id === id ? !prod.fav : prod.fav,
+    }));
+
+    setProducts(productsWithFav);
+  };
 
   return (
     <main>
@@ -44,7 +73,12 @@ function App() {
       <input name="text" placeholder="tv" type="text" onChange={(e) => setQuery(e.target.value)} />
       <ul>
         {products.map((product) => (
-          <li key={product.id}>
+          <li
+            key={product.id}
+            className={`${product.fav ? "fav" : ""}`}
+            style={{cursor: "pointer"}}
+            onClick={() => handleChangeFav(product.id)}
+          >
             <h4>{product.title}</h4>
             <p>{product.description}</p>
             <span>$ {product.price}</span>
